@@ -267,9 +267,7 @@ footer {
     height: 100vh;
     text-align: center;
 }
-.container h2{
-    text-align: center;
-}
+
 /* Blogs */
 
 .blog-post-container {
@@ -287,7 +285,6 @@ footer {
     border-radius: 8px;
     background-color: #fff;
     width: 100%;
-    max-width: 1000px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -310,6 +307,7 @@ footer {
     font-weight: bold;
     color: #333;
     margin-bottom: 10px;
+    text-align: start;
 }
 
 .blog-meta {

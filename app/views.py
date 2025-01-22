@@ -7,8 +7,8 @@ from django.contrib import messages
 # Create your views here.
 def login_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if not request.session.get('user_id'):  # Check if the user is logged in
-            return redirect('login')  # Redirect to the login page if not logged in
+        if not request.session.get('user_id'):
+            return redirect('login')
         return view_func(request, *args, **kwargs)
     return wrapper
 
@@ -93,14 +93,19 @@ def create_blog(request):
 
 @login_required
 def all_blogs(request):
-    blogs = BlogPost.objects.filter(is_draft=False).order_by('category')
+    blog_posts = BlogPost.objects.filter(is_draft=False).order_by('category')
+    categories = ['Mental Health', 'Heart Disease', 'Covid19', 'Immunization']  
+    categorized_posts = {category: [] for category in categories}
 
-    return render(request, 'all_blogs.html', {'blogs': blogs})
+    for post in blog_posts:
+        categorized_posts[post.category].append(post)
+        
+    return render(request, 'all_blogs.html', {'categorized_posts': categorized_posts})
 
 @login_required
 def my_blogs(request):
     if request.session.get('user_type') != 'doctor':
-        return redirect('dashboard')  # Redirect non-doctors to their dashboard
+        return redirect('dashboard') 
 
     user_id = request.session.get('user_id')
     published_blogs = BlogPost.objects.filter(author=user_id, is_draft=False)
