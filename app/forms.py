@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import UserProfile
+from .models import UserProfile, BlogPost
 
 class UserProfileForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput, label="Password")
@@ -43,3 +43,11 @@ class UserProfileForm(forms.ModelForm):
             raise forms.ValidationError("Passwords do not match. Please enter them again.")
         
         return cleaned_data
+    
+class BlogPostForm(forms.ModelForm):
+    class Meta:
+        model = BlogPost
+        fields = ['title', 'image', 'category', 'summary', 'content', 'is_draft']
+        widgets = {
+            'category': forms.Select(attrs={'class': 'form-control'}), 
+        }

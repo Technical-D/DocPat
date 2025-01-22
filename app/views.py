@@ -1,13 +1,20 @@
 from django.shortcuts import render, redirect
-from .forms import UserProfileForm
-from .models import UserProfile
+from .forms import UserProfileForm, BlogPostForm
+from .models import UserProfile, BlogPost
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib import messages
 
 # Create your views here.
+def login_required(view_func):
+    def wrapper(request, *args, **kwargs):
+        if not request.session.get('user_id'):  # Check if the user is logged in
+            return redirect('login')  # Redirect to the login page if not logged in
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
 def index(request):
-    if request.session.get('user_id') and request.session.get('user_type'):
-        return redirect('dashboard')
+
     return render(request, 'index.html')
 
 def register_user(request):
@@ -53,12 +60,51 @@ def logout_user(request):
     messages.success(request, "You have successfully logged out.")
     return redirect('login')
 
+@login_required
 def dashboard(request):
     user_type = request.session.get('user_type')
+    user_id = request.session.get('user_id')
+    user = UserProfile.objects.get(id=user_id)
 
     if user_type == 'doctor':
-        return render(request, 'doctor_dashboard.html')
+        return render(request, 'doctor_dashboard.html', {'user':user})
     elif user_type == 'patient':
-        return render(request, 'patient_dashboard.html')
+        return render(request, 'patient_dashboard.html', {'user':user})
     else:
         return redirect('login')
+
+@login_required
+def create_blog(request):
+    if request.session.get('user_type') != 'doctor':
+        return redirect('dashboard')  
+    
+    if request.method == "POST":
+        form = BlogPostForm(request.POST, request.FILES)
+        if form.is_valid():
+            blog = form.save(commit=False)
+            user = UserProfile.objects.get(id=request.session.get('user_id'))
+            blog.author = user
+            blog.save()
+            return redirect('dashboard') 
+    else:
+        form = BlogPostForm()
+
+    return render(request, 'create_blog.html', {'form': form})
+
+@login_required
+def all_blogs(request):
+    blogs = BlogPost.objects.filter(is_draft=False).order_by('category')
+
+    return render(request, 'all_blogs.html', {'blogs': blogs})
+
+@login_required
+def my_blogs(request):
+    if request.session.get('user_type') != 'doctor':
+        return redirect('dashboard')  # Redirect non-doctors to their dashboard
+
+    user_id = request.session.get('user_id')
+    published_blogs = BlogPost.objects.filter(author=user_id, is_draft=False)
+    draft_blogs = BlogPost.objects.filter(author=user_id, is_draft=True)
+
+    return render(request, 'my_blogs.html', {'published_blogs': published_blogs,
+        'draft_blogs': draft_blogs})

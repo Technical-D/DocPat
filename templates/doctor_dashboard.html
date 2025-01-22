@@ -3,7 +3,12 @@
 {% block title %}Doctor Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Welcome to your Doctor Dashboard, {{ user.first_name }}!</h1>
+<section class="dashboard">
+    <h1>Welcome to your Dashboard, Dr. {{ user.first_name }}!</h1>
+    <a href="{% url 'create_blog' %}" class="btn">Create Blog</a>
+    <a href="{% url 'my_blogs' %}" class="btn">My Blogs</a>
     <p>Here you can manage your appointments, patient records, etc.</p>
     <!-- Add doctor-specific content here -->
+</section>
+
 {% endblock %}

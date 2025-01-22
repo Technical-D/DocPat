@@ -3,7 +3,10 @@
 {% block title %}Patient Dashboard{% endblock %}
 
 {% block content %}
-    <h1>Welcome to your Patient Dashboard, {{ user.first_name }}!</h1>
+<section class="dashboard">
+    <h1>Welcome to your Dashboard, {{ user.first_name }}!</h1>
     <p>Here you can view your medical history, schedule appointments, etc.</p>
     <!-- Add patient-specific content here -->
+</section>
+
 {% endblock %}

@@ -21,3 +21,23 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"{self.username} ({self.get_user_type_display()})"
+
+class BlogPost(models.Model):
+    BLOG_CATEGORIES = (
+    ('Mental Health', 'Mental Health'),
+    ('Heart Disease', 'Heart Disease'),
+    ('Covid19', 'Covid19'),
+    ('Immunization', 'Immunization'),
+    )
+
+    author = models.ForeignKey(UserProfile, on_delete=models.CASCADE) 
+    title = models.CharField(max_length=200)
+    image = models.ImageField(upload_to='blog_images/')
+    category = models.CharField(max_length=50, choices=BLOG_CATEGORIES)  
+    summary = models.TextField(max_length=255)
+    content = models.TextField()
+    is_draft = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title

@@ -83,12 +83,12 @@ WSGI_APPLICATION = 'DocPat.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'docpat',
         'USER': os.getenv("USER"),
         'PASSWORD': os.getenv("PASSWORD"),
         'HOST': 'localhost', 
-        'PORT': '5432',       
+        'PORT': '3306',       
     }
 }
 

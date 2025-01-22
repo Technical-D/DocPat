@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>All Blogs</h1>
+  <div class="blog-post-container">
+    {% for blog in blogs %}
+        <div class="blog-post">
+            <img src="{{ blog.image.url }}" alt="Blog Image" class="blog-image">
+            
+            <div class="blog-content">
+                <h2 class="blog-title">{{ blog.title }}</h2>
+                <div class="blog-meta">
+                  <span>By: {{ blog.author.username }}</span>
+                  <span>Posted on: {{ blog.created_at|date:"F j, Y" }}</span>
+                </div>
+                <p class="blog-summary">
+                    {{ blog.summary|truncatewords:15 }}...
+                </p>
+                <a href="" class="view-post-btn">Read More</a>
+            </div>
+        </div>
+    {% endfor %}
+  </div>
+{% endblock content %}
